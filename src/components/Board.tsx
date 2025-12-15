@@ -1,13 +1,14 @@
-import type { TBoard } from "../types";
+import type { TBoard, TLevel } from "../types";
 import Cell from "./Cell";
 
 type Props = {
   gameBoard: TBoard;
   handleCellLeftClick: (row: number, col: number) => void;
+  level: TLevel;
 };
 
 const Board = (props: Props) => {
-  const { gameBoard, handleCellLeftClick } = props;
+  const { level, gameBoard, handleCellLeftClick } = props;
 
   return (
     <div className="board">
@@ -19,6 +20,7 @@ const Board = (props: Props) => {
               rowIndex={rowIndex}
               cellIndex={cellIndex}
               handleCellLeftClick={handleCellLeftClick}
+              level = {level}
             />
           ))}
         </div>

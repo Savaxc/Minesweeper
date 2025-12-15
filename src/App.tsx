@@ -1,13 +1,15 @@
 import './App.css'
 import Board from './components/Board'
+import SelectLevel from './components/SelectLevel';
 import useMinesweeperGame from './hooks/useMinesweeperGame'
 
 function App() {
-  const {gameBoard, handleCellLeftClick} = useMinesweeperGame();
+  const {level, changeLevel, gameBoard, handleCellLeftClick} = useMinesweeperGame();
 
   return (
     <div className="game">
-      <Board gameBoard={gameBoard} handleCellLeftClick={handleCellLeftClick} />
+      <Board level={level} gameBoard={gameBoard} handleCellLeftClick={handleCellLeftClick} />
+      <SelectLevel level={level} changeLevel={changeLevel} />
     </div>
   )
 }
