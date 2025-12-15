@@ -7,6 +7,7 @@ import {
 } from "../utils";
 import type { TBoard, TLevel } from "../types";
 import { DEFAULT_LEVEL, LEVELS } from "../constants";
+import useTimer from "./useTimer";
 
 const useMinesweeperGame = () => {
   const [level, setLevel] = useState(DEFAULT_LEVEL);
@@ -15,7 +16,7 @@ const useMinesweeperGame = () => {
   const changeLevel = useCallback((selectedLevel: TLevel) => {
     setLevel(selectedLevel);
   }, []);
-  
+
   const [gameBoard, setGameBoard] = useState(
     initGame(
       LEVELS[DEFAULT_LEVEL].rows,
@@ -38,7 +39,7 @@ const useMinesweeperGame = () => {
   }, [resetBoard]);
 
   useEffect(() => {
-    startNewGame()
+    startNewGame();
   }, [level]);
 
   const [isGameOver, setIsGameOver] = useState(false);
@@ -48,7 +49,18 @@ const useMinesweeperGame = () => {
   const [totalFlags, setTotalFlags] = useState(0);
   const minesLeft = currentLevel.totalMines - totalFlags;
 
+  const { timeDiff, isTimerRunning, startTimer, stopTimer, resetTimer } =
+    useTimer();
+
+  useEffect(() => {
+    if (isGameEnded) {
+      stopTimer();
+    }
+  }, [isGameEnded, stopTimer]);
+
   const openCell = (board: TBoard, row: number, col: number) => {
+    if (!isTimerRunning) startTimer();
+
     const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
     const cell = newGameBoard[row][col];
     // console.log("cell", cell);
@@ -69,7 +81,13 @@ const useMinesweeperGame = () => {
       }
 
       if (isEmptyCell) {
-        revealEmptyCells(newGameBoard, currentLevel.rows, currentLevel.cols, row, col);
+        revealEmptyCells(
+          newGameBoard,
+          currentLevel.rows,
+          currentLevel.cols,
+          row,
+          col
+        );
         console.log("empty cell");
       }
 
@@ -101,36 +119,51 @@ const useMinesweeperGame = () => {
     }
   };
 
-  const handleCellRightClick = (e: MouseEvent<HTMLDivElement>, row: number, col: number) => {
-  e.preventDefault();
+  const handleCellRightClick = (
+    e: MouseEvent<HTMLDivElement>,
+    row: number,
+    col: number
+  ) => {
+    e.preventDefault();
 
-  if(isGameEnded || gameBoard[row][col].isOpened) return;
+    if (isGameEnded || gameBoard[row][col].isOpened) return;
 
-  let flagsDiff = 0;
+    if (!isTimerRunning) startTimer();
 
-  setGameBoard((prevGameBoard) => {
-    const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
-    const cell = prevGameBoard[row][col];
+    let flagsDiff = 0;
 
-    if (cell.isFlagged) {
-      newGameBoard[row][col].isFlagged = false;
-      if(!flagsDiff) flagsDiff--;
-    }
+    setGameBoard((prevGameBoard) => {
+      const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
+      const cell = prevGameBoard[row][col];
 
-    if (!cell.isFlagged) {
-      newGameBoard[row][col].isFlagged = true;
-      if(!flagsDiff) flagsDiff++;
-    }
+      if (cell.isFlagged) {
+        newGameBoard[row][col].isFlagged = false;
+        if (!flagsDiff) flagsDiff--;
+      }
 
-    return newGameBoard;
-  });
+      if (!cell.isFlagged) {
+        newGameBoard[row][col].isFlagged = true;
+        if (!flagsDiff) flagsDiff++;
+      }
 
-  setTotalFlags((prevTotalFlags) => prevTotalFlags + flagsDiff)
+      return newGameBoard;
+    });
+
+    setTotalFlags((prevTotalFlags) => prevTotalFlags + flagsDiff);
+  };
+
+  return {
+    level,
+    changeLevel,
+    gameBoard,
+    handleCellLeftClick,
+    handleCellRightClick,
+    isGameWin,
+    isGameOver,
+    isGameEnded,
+    minesLeft,
+    timeDiff
+  };
 };
-
-  return { level, changeLevel, gameBoard, handleCellLeftClick, handleCellRightClick, isGameWin, isGameOver, isGameEnded, minesLeft };
-};
-
-
 
 export default useMinesweeperGame;

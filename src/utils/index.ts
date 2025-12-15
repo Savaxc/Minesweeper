@@ -118,7 +118,7 @@ export const revealAllMines = (board: TBoard, highlightWin?: boolean) => {
       if (cell.value === "mine") {
         cell.isOpened = true;
 
-        if(highlightWin){
+        if (highlightWin) {
           cell.highlight = "green";
         }
       }
@@ -144,4 +144,13 @@ export const checkGameWin = (board: TBoard, totalMines: number) => {
 
   // Win condition: All non-mine cells are opened, or all mines are flagged.
   return unopenedCells === totalMines || correctlyFlaggedMines === totalMines;
+};
+
+export const getTimeDiff = (timeNow: Date | null, timeStarted: Date | null) => {
+  if (timeNow === null || timeStarted === null) return "00:00";
+
+  return new Intl.DateTimeFormat("en-US", {
+    minute: "2-digit",
+    second: "2-digit",
+  }).format(timeNow.getTime() - timeStarted.getTime());
 };
