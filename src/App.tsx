@@ -1,5 +1,6 @@
 import "./App.css";
 import Board from "./components/Board";
+import Header from "./components/Header";
 import SelectLevel from "./components/SelectLevel";
 import useMinesweeperGame from "./hooks/useMinesweeperGame";
 
@@ -10,10 +11,20 @@ function App() {
     gameBoard,
     handleCellLeftClick,
     handleCellRightClick,
+    isGameOver,
+    isGameWin,
+    isGameEnded,
+    minesLeft,
   } = useMinesweeperGame();
 
   return (
     <div className="game">
+      <Header
+        isGameWin={isGameWin}
+        isGameOver={isGameOver}
+        isGameEnded={isGameEnded}
+        minesLeft={minesLeft}
+      />
       <Board
         level={level}
         gameBoard={gameBoard}

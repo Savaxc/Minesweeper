@@ -46,6 +46,7 @@ const useMinesweeperGame = () => {
   const isGameEnded = isGameOver || isGameWin;
 
   const [totalFlags, setTotalFlags] = useState(0);
+  const minesLeft = currentLevel.totalMines - totalFlags;
 
   const openCell = (board: TBoard, row: number, col: number) => {
     const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
@@ -127,7 +128,7 @@ const useMinesweeperGame = () => {
   setTotalFlags((prevTotalFlags) => prevTotalFlags + flagsDiff)
 };
 
-  return { level, changeLevel, gameBoard, handleCellLeftClick, handleCellRightClick };
+  return { level, changeLevel, gameBoard, handleCellLeftClick, handleCellRightClick, isGameWin, isGameOver, isGameEnded, minesLeft };
 };
 
 
