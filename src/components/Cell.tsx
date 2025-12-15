@@ -11,12 +11,13 @@ type CellProps = {
   handleCellLeftClick: (row: number, col: number) => void;
 }
 
-const Cell = ({ cell, rowIndex, cellIndex, handleCellLeftClick }) => {
+const Cell = ({ cell, rowIndex, cellIndex, handleCellLeftClick }: CellProps) => {
   return (
     <div
       className={clsx(
         "cell",
-        typeof cell.value === "number" && CELL_NUMBERS_COLORS[cell.value]
+        typeof cell.value === "number" && CELL_NUMBERS_COLORS[cell.value],
+        cell.value === "mine" && cell.highlight
       )}
       onClick={() => handleCellLeftClick(rowIndex, cellIndex)}
     >

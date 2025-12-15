@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { initGame, revealEmptyCells } from "../utils";
+import { initGame, revealAllMines, revealEmptyCells } from "../utils";
 import type { TBoard } from "../types";
 
 const useMinesweeperGame = () => {
   const [gameBoard, setGameBoard] = useState(initGame(9, 9, 10));
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const openCell = (board: TBoard, row: number, col: number) => {
     const newGameBoard: TBoard =JSON.parse(JSON.stringify(gameBoard));
@@ -14,7 +15,9 @@ const useMinesweeperGame = () => {
     const isEmptyCell = typeof cell.value === 'number' && cell.value === 0;
 
     if(isMineCell){
-      console.log('mine cell')
+      setIsGameOver(true);
+      cell.highlight = 'red';
+      revealAllMines(newGameBoard);
     }
 
     if(!isMineCell) {
