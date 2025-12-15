@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type MouseEvent } from "react";
 import {
   checkGameWin,
   initGame,
@@ -44,6 +44,8 @@ const useMinesweeperGame = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWin, setisGameWin] = useState(false);
   const isGameEnded = isGameOver || isGameWin;
+
+  const [totalFlags, setTotalFlags] = useState(0);
 
   const openCell = (board: TBoard, row: number, col: number) => {
     const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
@@ -98,7 +100,36 @@ const useMinesweeperGame = () => {
     }
   };
 
-  return { level, changeLevel, gameBoard, handleCellLeftClick };
+  const handleCellRightClick = (e: MouseEvent<HTMLDivElement>, row: number, col: number) => {
+  e.preventDefault();
+
+  if(isGameEnded || gameBoard[row][col].isOpened) return;
+
+  let flagsDiff = 0;
+
+  setGameBoard((prevGameBoard) => {
+    const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
+    const cell = prevGameBoard[row][col];
+
+    if (cell.isFlagged) {
+      newGameBoard[row][col].isFlagged = false;
+      if(!flagsDiff) flagsDiff--;
+    }
+
+    if (!cell.isFlagged) {
+      newGameBoard[row][col].isFlagged = true;
+      if(!flagsDiff) flagsDiff++;
+    }
+
+    return newGameBoard;
+  });
+
+  setTotalFlags((prevTotalFlags) => prevTotalFlags + flagsDiff)
 };
+
+  return { level, changeLevel, gameBoard, handleCellLeftClick, handleCellRightClick };
+};
+
+
 
 export default useMinesweeperGame;

@@ -9,10 +9,11 @@ type CellProps = {
   rowIndex: number;
   cellIndex: number;
   handleCellLeftClick: (row: number, col: number) => void;
+  handleCellRightClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, row: number, col: number) => void
   level: TLevel;
 }
 
-const Cell = ({ cell, rowIndex, cellIndex, handleCellLeftClick, level }: CellProps) => {
+const Cell = ({ cell, rowIndex, cellIndex, handleCellLeftClick, handleCellRightClick, level }: CellProps) => {
   return (
     <div
       className={clsx(
@@ -22,6 +23,7 @@ const Cell = ({ cell, rowIndex, cellIndex, handleCellLeftClick, level }: CellPro
         level !== "easy" && "small"
       )}
       onClick={() => handleCellLeftClick(rowIndex, cellIndex)}
+      onContextMenu={(e) => handleCellRightClick(e, rowIndex, cellIndex)}
     >
       {typeof cell.value === "number" && <>{cell.value || ""}</>}
       {cell.value === "mine" && <img src={mineIcon} />}

@@ -4,11 +4,12 @@ import Cell from "./Cell";
 type Props = {
   gameBoard: TBoard;
   handleCellLeftClick: (row: number, col: number) => void;
+  handleCellRightClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, row: number, col: number) => void;
   level: TLevel;
 };
 
 const Board = (props: Props) => {
-  const { level, gameBoard, handleCellLeftClick } = props;
+  const { level, gameBoard, handleCellLeftClick, handleCellRightClick } = props;
 
   return (
     <div className="board">
@@ -20,6 +21,7 @@ const Board = (props: Props) => {
               rowIndex={rowIndex}
               cellIndex={cellIndex}
               handleCellLeftClick={handleCellLeftClick}
+              handleCellRightClick={handleCellRightClick}
               level = {level}
             />
           ))}
