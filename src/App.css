@@ -121,6 +121,7 @@
 }
 
 .select-level button {
+  font-size:  0.9rem;
   width: 100%;
   display: flex;
   padding: 0.25em 1rem;
@@ -139,7 +140,7 @@ button {
   color: var(--surface);
   border: none;
   padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
+  font-size: 1rem;
   border-radius: 0.25rem;
   font-weight: 700;
 }

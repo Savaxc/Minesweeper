@@ -6,7 +6,7 @@ const useTimer = () => {
   const [timeStarted, setTimeStarted] = useState<Date | null>(null);
   const [timeNow, setTimeNow] = useState<Date | null>(null);
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
-  const timeDiff = useMemo(() => getTimeDiff(timeNow, timeStarted), [timeNow]);
+  const timeDiff = useMemo(() => getTimeDiff(timeNow, timeStarted), [timeNow, timeStarted]);
   const isTimerRunning = Boolean(timeStarted);
 
   const startTimer = useCallback(() => {

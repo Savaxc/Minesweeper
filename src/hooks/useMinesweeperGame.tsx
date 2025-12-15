@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
 import {
   checkGameWin,
+  initBoard,
   initGame,
   revealAllMines,
   revealEmptyCells,
@@ -8,6 +9,7 @@ import {
 import type { TBoard, TLevel } from "../types";
 import { DEFAULT_LEVEL, LEVELS } from "../constants";
 import useTimer from "./useTimer";
+import useSFX from "./useSFX";
 
 const useMinesweeperGame = () => {
   const [level, setLevel] = useState(DEFAULT_LEVEL);
@@ -68,6 +70,8 @@ const useMinesweeperGame = () => {
     startNewGame();
   }, [level]);
 
+  const {playSoundEffect} = useSFX();
+
   const [isGameOver, setIsGameOver] = useState(false);
   const [isGameWin, setisGameWin] = useState(false);
   const isGameEnded = isGameOver || isGameWin;
@@ -98,12 +102,14 @@ const useMinesweeperGame = () => {
       setIsGameOver(true);
       cell.highlight = "red";
       revealAllMines(newGameBoard);
+      playSoundEffect("GAME_OVER");
     }
 
     if (!isMineCell) {
       cell.isOpened = true;
       if (isNumberCell) {
         console.log("number cell");
+        playSoundEffect("REVEAL_NUMBER");
       }
 
       if (isEmptyCell) {
@@ -115,11 +121,13 @@ const useMinesweeperGame = () => {
           col
         );
         console.log("empty cell");
+        playSoundEffect("REVEAL_EMPTY");
       }
 
       if (checkGameWin(newGameBoard, currentLevel.totalMines)) {
         setisGameWin(true);
         revealAllMines(newGameBoard, true);
+        playSoundEffect("GAME_WIN");
       }
     }
 
@@ -135,8 +143,26 @@ const useMinesweeperGame = () => {
       return null;
     }
 
+    const mineCell = gameBoard[row][col].value === "mine";
+    const isFirstClick = !isTimerRunning;
+    const isFirstClickOnMine = mineCell && isFirstClick;
+
+    let newGameBoard: TBoard;
+
+    if (isFirstClickOnMine) {
+      do {
+        newGameBoard = initBoard(
+          currentLevel.rows,
+          currentLevel.cols,
+          currentLevel.totalMines
+        );
+      } while (newGameBoard[row][col].value === "mine");
+    } else {
+      newGameBoard = JSON.parse(JSON.stringify(gameBoard));
+    }
+
     // console.log("left click", row, col);
-    const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
+    // const newGameBoard: TBoard = JSON.parse(JSON.stringify(gameBoard));
 
     const boardAfterOpeningCell = openCell(newGameBoard, row, col);
 
@@ -165,11 +191,19 @@ const useMinesweeperGame = () => {
       if (cell.isFlagged) {
         newGameBoard[row][col].isFlagged = false;
         if (!flagsDiff) flagsDiff--;
+        playSoundEffect("FLAG_REMOVE");
       }
 
       if (!cell.isFlagged) {
         newGameBoard[row][col].isFlagged = true;
         if (!flagsDiff) flagsDiff++;
+        playSoundEffect("FLAG_PLACE");
+      }
+
+      if (checkGameWin(newGameBoard, currentLevel.totalMines)) {
+        revealAllMines(newGameBoard, true);
+        setisGameWin(true);
+        playSoundEffect("GAME_WIN");
       }
 
       return newGameBoard;

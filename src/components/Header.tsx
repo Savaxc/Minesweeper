@@ -37,7 +37,7 @@ const Header = ({
       </div>
       <div className="header-label">
         <TimerDisplay timeDiff={timeDiff} />
-      </div>{" "}
+      </div>
     </header>
   );
 };
