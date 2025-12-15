@@ -7,6 +7,8 @@ type HeaderProps = {
   isGameEnded: boolean;
   minesLeft: number;
   timeDiff: string;
+  startNewGame: () => void;
+  restartGame: () => void;
 };
 
 const Header = ({
@@ -15,6 +17,9 @@ const Header = ({
   isGameEnded,
   minesLeft,
   timeDiff,
+  startNewGame,
+  restartGame
+
 }: HeaderProps) => {
   return (
     <header>
@@ -25,6 +30,10 @@ const Header = ({
           isGameEnded={isGameEnded}
           minesLeft={minesLeft}
         />
+      </div>
+      <div className="header-buttons">
+        <button onClick={startNewGame}>New</button>
+        <button onClick={restartGame}>Restart</button>
       </div>
       <div className="header-label">
         <TimerDisplay timeDiff={timeDiff} />

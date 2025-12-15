@@ -25,17 +25,43 @@ const useMinesweeperGame = () => {
     )
   );
 
-  const resetBoard = useCallback(() => {
-    setIsGameOver(false);
-    setisGameWin(false);
+  const resetBoard = useCallback(
+    (isRestart?: boolean) => {
+      stopTimer();
+      resetTimer();
+      setTotalFlags(0);
+      setIsGameOver(false);
+      setisGameWin(false);
 
-    setGameBoard(
-      initGame(currentLevel.rows, currentLevel.cols, currentLevel.totalMines)
-    );
-  }, [currentLevel]);
+      if (isRestart) {
+        setGameBoard((prevGameBoard) =>
+          prevGameBoard.map((row) =>
+            row.map((cell) => ({
+              value: cell.value,
+              isFlagged: false,
+              isOpened: false,
+            }))
+          )
+        );
+      } else {
+        setGameBoard(
+          initGame(
+            currentLevel.rows,
+            currentLevel.cols,
+            currentLevel.totalMines
+          )
+        );
+      }
+    },
+    [currentLevel]
+  );
 
   const startNewGame = useCallback(() => {
     resetBoard();
+  }, [resetBoard]);
+
+  const restartGame = useCallback(() => {
+    resetBoard(true);
   }, [resetBoard]);
 
   useEffect(() => {
@@ -162,7 +188,9 @@ const useMinesweeperGame = () => {
     isGameOver,
     isGameEnded,
     minesLeft,
-    timeDiff
+    timeDiff,
+    startNewGame,
+    restartGame
   };
 };
 
